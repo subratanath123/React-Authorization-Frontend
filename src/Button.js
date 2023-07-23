@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-export default class Input extends Component {
+export default class Button extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -13,9 +13,9 @@ export default class Input extends Component {
     }
 
     render = () =>
-        <React.Fragment>
+        <div className={`d-flex justify-content-${this.props.align} pt-3`}>
             <button type={ this.props.type } className={ this.props.className } onClick={ () => this.props.callback() }>
                 { this.props.name }
             </button>
-        </React.Fragment>
+        </div>
 }

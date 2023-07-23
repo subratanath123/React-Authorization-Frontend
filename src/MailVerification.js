@@ -1,24 +1,52 @@
-import React, {Component} from 'react';
+import React from 'react';
 import FormInput from "./FormInput";
 import Button from "./Button";
+import {useLocation, useNavigate} from 'react-router-dom';
+import {useState} from 'react';
 import axios from "axios";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-export default class SignUp extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+const MailVerification = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
 
-        }
-    }
+    const [state, setState] = useState({
+        verificationCode: '',
+        formState: '',
+        email: location.state.email,
+        submitted: false
+    });
 
-    handleInputChange = (e) => {
-        this.setState({[e.target.name]: {value: e.target.value, error: '', errorClass: ''}});
+    const handleInputChange = (e) => {
+        setState({
+            ...state,
+            [e.target.name]: e.target.value
+        });
     };
 
+    const handleMailVerify = (e) => {
+        const {email, verificationCode} = state;
 
-    render = () =>
-        <form className={`row g-3 ${ this.state.formState === "invalid" && 'needs-validation' }`}>
+        setState({
+            ...state,
+            submitted: true
+        });
+
+        axios
+            .post('http://auth-server:8000/public/mail-verification', {email, verificationCode})
+            .then((response) => {
+                    const stateData = {message: state.email + " has been verified successfully"};
+                    navigate('/done', {state: stateData});
+
+                    console.log('Verification successfully');
+                }
+            )
+            .catch((error) => {
+                console.log('Verification failed:', error);
+            });
+    };
+
+    return (
+        <form className={`row g-3 ${state.formState === "invalid" && 'needs-validation'}`}>
 
             <section className="h-100 bg-dark">
                 <div className="container py-5 h-100">
@@ -36,29 +64,32 @@ export default class SignUp extends Component {
                                     </div>
                                     <div className="col-xl-6">
                                         <div className="card-body p-md-5 text-black">
-                                            <h2 className="mb-5 text-uppercase">
-                                                Mail Verification
+                                            <h2 className="mb-5" hidden={state.submitted}>
+                                                Be Friend Me
                                             </h2>
 
-                                            <div className="row">
-                                                < FormInput type='text' bindPath='firstName' placeholder="First Name"
-                                                            isSingleDiv='true'
-                                                            error={this.state.firstName.error}
-                                                            value={this.state.firstName.value}
-                                                            errorClass={this.state.firstName.errorClass}
-                                                            callback={(e) => this.handleInputChange(e)}/>
-
-                                                < FormInput type='text' bindPath='lastName' placeholder="Last Name"
-                                                            isSingleDiv='true'
-                                                            error={this.state.lastName.error}
-                                                            value={this.state.lastName.value}
-                                                            errorClass={this.state.lastName.errorClass}
-                                                            callback={(e) => this.handleInputChange(e)}/>
+                                            <div className="text-center spinner-container" hidden={!state.submitted}>
+                                                <div className="spinner-border" role="status">
+                                                    <span className="visually-hidden">Loading...</span>
+                                                </div>
                                             </div>
 
-                                            <div className="row">
-                                                < Button type='button' name='Sign Up'
-                                                         callback={() => this.handleSignup()}/>
+                                            <div className="row" hidden={state.submitted}>
+                                                < FormInput type='text' bindPath='verificationCode'
+                                                            placeholder={state.verificationCode}
+                                                            isSingleDiv='false'
+                                                            required='true'
+                                                            value={state.verificationCode}
+                                                            callback={(e) => handleInputChange(e)}/>
+
+                                                <div className="small text-success-emphasis mt-2">
+                                                    We have sent you verification code on your email ({state.email})
+                                                </div>
+                                            </div>
+
+                                            <div className="row" hidden={state.submitted}>
+                                                < Button type='button' name='Verify'
+                                                         callback={() => handleMailVerify()}/>
                                             </div>
                                         </div>
                                     </div>
@@ -69,5 +100,7 @@ export default class SignUp extends Component {
                 </div>
             </section>
         </form>
+    )
 }
 
+export default MailVerification;

@@ -2,8 +2,17 @@ import React, {Component} from 'react';
 import FormInput from "./FormInput";
 import Button from "./Button";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
-export default class SignUp extends Component {
+const SignUpWrapper = () => {
+    const navigate = useNavigate();
+
+    return <SignUp navigate={navigate}/>;
+};
+
+export default SignUpWrapper;
+
+class SignUp extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,10 +41,13 @@ export default class SignUp extends Component {
                 return acc;
             }, {});
 
-        axios.post('http://auth-server:8000/public/registration', signupData)
+        axios
+            .post('http://auth-server:8000/public/registration', signupData)
             .then((response) => {
-                console.log('Signup successful:', response.data);
-            })
+                    const stateData = {email: this.state.email.value};
+                    this.props.navigate('/mail-verification', {state: stateData});
+                }
+            )
             .catch((error) => {
                 if (error.response && error.response.status === 400) {
 
@@ -60,7 +72,7 @@ export default class SignUp extends Component {
     }
 
     render = () =>
-        <form className={`row g-3 ${ this.state.formState === "invalid" && 'needs-validation' }`}>
+        <form className={`row g-3 ${this.state.formState === "invalid" && 'needs-validation'}`}>
 
             <section className="h-100 bg-dark">
                 <div className="container py-5 h-100">
@@ -78,20 +90,20 @@ export default class SignUp extends Component {
                                     </div>
                                     <div className="col-xl-6">
                                         <div className="card-body p-md-5 text-black">
-                                            <h2 className="mb-5 text-uppercase">
+                                            <h2 className="mb-5">
                                                 Registration
                                             </h2>
 
                                             <div className="row">
                                                 < FormInput type='text' bindPath='firstName' placeholder="First Name"
-                                                            isSingleDiv='true'
+                                                            isSingleDiv='false'
                                                             error={this.state.firstName.error}
                                                             value={this.state.firstName.value}
                                                             errorClass={this.state.firstName.errorClass}
                                                             callback={(e) => this.handleInputChange(e)}/>
 
                                                 < FormInput type='text' bindPath='lastName' placeholder="Last Name"
-                                                            isSingleDiv='true'
+                                                            isSingleDiv='false'
                                                             error={this.state.lastName.error}
                                                             value={this.state.lastName.value}
                                                             errorClass={this.state.lastName.errorClass}
@@ -142,6 +154,7 @@ export default class SignUp extends Component {
 
                                             <div className="row">
                                                 < Button type='button' name='Sign Up'
+                                                         align='left'
                                                          callback={() => this.handleSignup()}/>
                                             </div>
                                         </div>
@@ -154,4 +167,3 @@ export default class SignUp extends Component {
             </section>
         </form>
 }
-

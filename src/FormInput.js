@@ -12,7 +12,14 @@ export default class FormInput extends Component {
     createRadioInput = () =>
         this.props.options.map(option =>
             <label className="form-check form-check-inline">
-                <Input type='radio' className='form-check-input' bindPath={this.props.bindPath} value={option}/>
+                <Input type='radio'
+                       className='form-check-input'
+                       value={option}
+                       bindPath={this.props.bindPath}
+                       hidden={this.props.hidden}
+                       required={this.props.required}
+                       errorClass={this.props.errorClass}
+                       callback={(e) => this.props.callback(e)}/>
                 <span className="form-check-label"> {option} </span>
             </label>
         )
@@ -44,15 +51,17 @@ export default class FormInput extends Component {
     }
 
     render = () => {
-        return this.props.isSingleDiv ? (
-            <div className='col-md-6 mb-4'>
+        return this.props.isSingleDiv === 'false' ? (
+            <div className='col-md-6 mb-4 '>
                 <div className="form-outline">
                     {this.getInputField()}
                 </div>
             </div>
         ) : (
-            <div className="form-outline mb-4">
-                {this.getInputField()}
+            <div className='col-md-12 mb-4 '>
+                <div className="form-outline">
+                    {this.getInputField()}
+                </div>
             </div>
         )
     }
