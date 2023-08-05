@@ -32,7 +32,7 @@ const MailVerification = () => {
         });
 
         axios
-            .post('http://auth-server:8000/public/mail-verification', {email, verificationCode})
+            .post('http://localhost:8000/public/mail-verification', {email, verificationCode})
             .then((response) => {
                     const stateData = {message: state.email + " has been verified successfully"};
                     navigate('/done', {state: stateData});

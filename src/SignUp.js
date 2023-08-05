@@ -42,7 +42,7 @@ class SignUp extends Component {
             }, {});
 
         axios
-            .post('http://auth-server:8000/public/registration', signupData)
+            .post('http://localhost:8000/public/registration', signupData)
             .then((response) => {
                     const stateData = {email: this.state.email.value};
                     this.props.navigate('/mail-verification', {state: stateData});

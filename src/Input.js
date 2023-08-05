@@ -14,7 +14,7 @@ export default class Input extends Component {
     render = () =>
         <React.Fragment>
             <input type={this.props.type}
-                   id={this.props.bindPath}
+                   id={this.props.id || this.props.bindPath}
                    name={this.props.bindPath}
                    value={this.props.value}
                    className={`${ this.props.className } ${ this.props.errorClass }`}

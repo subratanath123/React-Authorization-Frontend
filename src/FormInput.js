@@ -1,68 +1,86 @@
-import React, {Component} from 'react';
-import BindingError from './BindingError'
+import React from 'react';
+import BindingError from './BindingError';
 import Input from "./Input";
+import { v4 as uuidv4 } from 'uuid';
 
-export default class FormInput extends Component {
-    constructor(props) {
-        super(props);
+const FormInput = (props) => {
 
-        this.state = {}
-    }
+    const uniqueId = uuidv4();
 
-    createRadioInput = () =>
-        this.props.options.map(option =>
-            <label className="form-check form-check-inline">
+    const createRadioInput = () =>
+        props.options.map((option, index) =>
+            <label className="form-check form-check-inline"  key={`${uniqueId}_${index}`} >
                 <Input type='radio'
                        className='form-check-input'
                        value={option}
-                       bindPath={this.props.bindPath}
-                       hidden={this.props.hidden}
-                       required={this.props.required}
-                       errorClass={this.props.errorClass}
-                       callback={(e) => this.props.callback(e)}/>
+                       id={`${index} ${option}`}
+                       bindPath={props.bindPath}
+                       hidden={props.hidden}
+                       required={props.required}
+                       errorClass={props.errorClass}
+                       callback={(e) => props.callback(e)}/>
                 <span className="form-check-label"> {option} </span>
             </label>
         )
 
-    getInputField() {
-        return <>
-            {this.props.type === 'radio' &&
-                this.createRadioInput()}
 
-            {this.props.type !== 'radio' &&
-                <Input type={this.props.type}
-                       bindPath={this.props.bindPath}
-                       value={this.props.value}
-                       errorClass={this.props.errorClass}
-                       placeholder={this.props.placeholder}
-                       callback={(e) => this.props.callback(e)}
-                />
-            }
-
-            <BindingError hasError={this.props.error} error={this.props.error}/>
-
-            {
-                this.props.help &&
-                <small className="form-text text-muted">
-                    {this.props.help}
-                </small>
-            }
-        </>;
-    }
-
-    render = () => {
-        return this.props.isSingleDiv === 'false' ? (
+    return (
+        props.isSingleDiv === 'false' ? (
             <div className='col-md-6 mb-4 '>
+
                 <div className="form-outline">
-                    {this.getInputField()}
+                    {props.type === 'radio' &&
+                        createRadioInput()}
+
+                    {props.type !== 'radio' &&
+                        <Input type={props.type}
+                               bindPath={props.bindPath}
+                               value={props.value}
+                               errorClass={props.errorClass}
+                               placeholder={props.placeholder}
+                               callback={(e) => props.callback(e)}
+                        />
+                    }
+
+                    <BindingError hasError={props.error} error={props.error}/>
+
+                    {
+                        props.help &&
+                        <small className="form-text text-muted">
+                            {props.help}
+                        </small>
+                    }
                 </div>
             </div>
         ) : (
-            <div className='col-md-12 mb-4 '>
+            <div className='col-md-12 mb-4'>
+
                 <div className="form-outline">
-                    {this.getInputField()}
+                    {props.type === 'radio' &&
+                        createRadioInput()}
+
+                    {props.type !== 'radio' &&
+                        <Input type={props.type}
+                               bindPath={props.bindPath}
+                               value={props.value}
+                               errorClass={props.errorClass}
+                               placeholder={props.placeholder}
+                               callback={(e) => props.callback(e)}
+                        />
+                    }
+
+                    <BindingError hasError={props.error} error={props.error}/>
+
+                    {
+                        props.help &&
+                        <small className="form-text text-muted">
+                            {props.help}
+                        </small>
+                    }
                 </div>
             </div>
         )
-    }
+    )
 }
+
+export default FormInput;

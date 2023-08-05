@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import SignUp from "./SignUp";
 import MailVerification from "./MailVerification";
 import DonePage from "./DonePage";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
     return (

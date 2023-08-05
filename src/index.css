@@ -11,8 +11,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-.is-invalid {
-  background-image: none !important;
-  border-color: #dc3545;
-}
